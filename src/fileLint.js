@@ -7,7 +7,8 @@ var config = require('./config');
 var validators = require('./validators');
 
 var fileTypes = {
-	'jscs': '*.js'
+	'jscs': '*.js',
+	'jshint': '*.js'
 };
 
 function Linter(options, cb) {
@@ -20,7 +21,7 @@ function Linter(options, cb) {
 	this.err = [];
 	this.lints = [];
 	
-	for (key in options.lintConfig) {
+	for (var key in options.lintConfig) {
 		if (validators[key] && minimatch(options.path, fileTypes[key], { matchBase: true })) {
 			this.validating++;
 			validators[key].validate({
@@ -32,7 +33,7 @@ function Linter(options, cb) {
 	}
 	this.ended = true;
 	this.end();
-};
+}
 
 Linter.prototype.onValidate = function(err, lints) {
 	if (err) this.err = this.err.concat(err);

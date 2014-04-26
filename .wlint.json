@@ -55,5 +55,19 @@
 			"checkRedundantParams": true
 			//"requireParamTypes": true
 		}
+	},
+	"jshint": {
+		"bitwise": true,
+		"eqeqeq": true,
+		"freeze": true,
+		"latedef": true,
+		"noarg": true,
+		"nonbsp": true,
+		"undef": true,
+		"unused": true,
+		"eqnull": true,
+		"lastsemic": true,
+		"maxerr": 1000,
+		"node": true
 	}
 }

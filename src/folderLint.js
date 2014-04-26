@@ -22,7 +22,7 @@ function Linter(folder, cb) {
 		this.ended = true;
 		this.end();
 	}.bind(this));
-};
+}
 
 Linter.prototype.onValidate = function(err, lint) {
 	if (err) this.err = this.err.concat(err);
