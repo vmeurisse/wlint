@@ -7,6 +7,7 @@ var config = require('./config');
 var validators = require('./validators');
 
 var fileTypes = {
+	'eslint': '*.js',
 	'jscs': '*.js',
 	'jshint': '*.js'
 };

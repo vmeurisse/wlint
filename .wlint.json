@@ -1,4 +1,28 @@
 {
+	"eslint": {
+		"rules": {
+			"no-comma-dangle": 2,
+			"no-constant-condition": 2,
+			"no-extra-boolean-cast": 2,
+			"no-invalid-regexp": 2,
+			"no-negated-in-lhs": 2,
+			"no-obj-calls": 2,
+			"no-regex-spaces": 2,
+			"no-sparse-arrays": 2,
+			"no-empty-class": 2,
+			"no-lone-blocks": 2,
+			"no-octal": 2,
+			"no-self-compare": 2,
+			"no-sequences": 2,
+			"no-yoda": 2,
+			"no-array-constructor": 2,
+			"no-space-before-semi": 2,
+			"no-wrap-func": 2,
+			"brace-style": [2, "1tbs"],
+			"consistent-this": [2, "self"]
+
+		}
+	},
 	"jscs": {
 		"requireCurlyBraces": ["try", "catch", "finaly"],
 		"requireSpaceAfterKeywords": ["if", "else", "for", "while", "do", "switch", "return", "try", "catch", "finaly"],
@@ -18,7 +42,7 @@
 		},
 		
 		//"disallowMultipleVarDecl": true,
-		//"requireBlocksOnNewline": true,
+		//"requireBlocksOnNewline": 1, // Not yet released
 		"disallowEmptyBlocks": true,
 		//"disallowSpacesInsideObjectBrackets": true,
 		//"disallowSpacesInsideArrayBrackets": true,
@@ -49,7 +73,6 @@
 		"requireLineFeedAtFileEnd": true,
 		"maximumLineLength": 120,
 		"requireCapitalizedConstructors": true,
-		"safeContextKeyword": [ "self" ],
 		"validateJSDoc": {
 			"checkParamNames": true,
 			"checkRedundantParams": true
@@ -68,6 +91,7 @@
 		"eqnull": true,
 		"lastsemic": true,
 		"maxerr": 1000,
-		"node": true
+		"node": true,
+		"-W018": true //Confusing use of '!'
 	}
 }
