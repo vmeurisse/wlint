@@ -17,7 +17,7 @@ Validator.prototype.validate = function(options, cb) {
 				line: error.line,
 				column: error.column,
 				message: error.message,
-				code: 'eslint:' + error.ruleId
+				code: 'eslint' + (error.ruleId ? ':' + error.ruleId : '') //ESLint does not provide ruleId on syntax error
 			};
 		});
 	}
