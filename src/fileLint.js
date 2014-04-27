@@ -16,36 +16,51 @@ function Linter(options, cb) {
 	this.options = options;
 	this.cb = cb;
 	
-	this.validating = 0;
-	this.ended = false;
+	this.validators = [];
+	this.validated = 0;
 	
 	this.err = [];
 	this.lints = [];
 	
 	for (var key in options.lintConfig) {
 		if (validators[key] && minimatch(options.path, fileTypes[key], { matchBase: true })) {
-			this.validating++;
-			validators[key].validate({
-				path: options.path,
-				content: options.content,
+			this.validators.push({
+				validator: validators[key],
 				config: options.lintConfig[key]
-			}, this.onValidate.bind(this));
+			});
 		}
 	}
-	this.ended = true;
-	this.end();
+	
+	if (!this.validators.length) return cb();
+
+	fs.readFile(options.path, {encoding: 'UTF-8'}, function(err, content) {
+		if (err) return cb([err]);
+		this.options.content = content;
+		this.options.lines = content.split(/\r?\n/);
+		this.lint();
+	}.bind(this));
 }
+
+Linter.prototype.lint = function() {
+	this.validators.forEach(function(validator) {
+		validator.validator.validate({
+			path: this.options.path,
+			content: this.options.content,
+			config: validator.config
+		}, this.onValidate.bind(this));
+	}.bind(this));
+};
 
 Linter.prototype.onValidate = function(err, lints) {
 	if (err) this.err = this.err.concat(err);
 	this.lints = this.lints.concat(lints);
 	
-	this.validating--;
+	this.validated++;
 	this.end();
 };
 
 Linter.prototype.end = function() {
-	if (this.ended && this.validating === 0) {
+	if (this.validated === this.validators.length) {
 		var err = this.err.length ? this.err : null;
 		var lint = this.lints.length ? { file: this.options.path, lines: this.options.lines, errors: this.lints } : null;
 		this.cb(err, lint);
@@ -56,8 +71,6 @@ Linter.prototype.end = function() {
  * Lint a file
  * @param {Object} options
  * @param {string} options.path - path of the file to lint
- * @param {string} [options.content] - Content of the file to lint. If no content is provided `options.path` is used to
- *                                     read the content
  * @param {Object} [options.lintConfig] - Config for the lint. If not provided, it is read in parents folders of
  *                                        `options.path`
  * @param {Function} cb
@@ -68,15 +81,6 @@ exports.lint = function lint(options, cb) {
 		config.load(folder, function(err, conf) {
 			if (err) return cb([err], []);
 			options.lintConfig = conf;
-			lint(options, cb);
-		});
-		return;
-	}
-	if (typeof options.content !== 'string') {
-		fs.readFile(options.path, {encoding: 'UTF-8'}, function(err, content) {
-			if (err) return cb([err], []);
-			options.content = content;
-			options.lines = content.split(/\r?\n/);
 			lint(options, cb);
 		});
 		return;
