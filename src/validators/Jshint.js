@@ -12,6 +12,8 @@ util.inherits(Validator, DefaultValidator);
 Validator.prototype.validate = function(options, cb) {
 	var err = [];
 	
+	options.config.indent = 1;
+	
 	jshint(options.content, options.config, options.config.globals);
 	var errors = jshint.data().errors;
 	if (errors) {
