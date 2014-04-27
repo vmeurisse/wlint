@@ -20,7 +20,7 @@ Validator.prototype.validate = function(options, cb) {
 		errors = errors.getErrorList().map(function(error) {
 			return {
 				line: error.line,
-				column: error.column,
+				column: error.column + 1,
 				message: error.message,
 				code: 'jscs'
 			};
