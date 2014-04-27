@@ -17,7 +17,14 @@ Validator.prototype.validate = function(options, cb) {
 	jscs.configure(conf);
 	try {
 		var errors = jscs.checkString(options.content, options.path);
-		errors = errors.getErrorList();
+		errors = errors.getErrorList().map(function(error) {
+			return {
+				line: error.line,
+				column: error.column,
+				message: error.message,
+				code: 'jscs'
+			};
+		});
 		cb(null, errors);
 	} catch (e) {
 		cb([e], []);
