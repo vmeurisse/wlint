@@ -47,7 +47,7 @@ Linter.prototype.onValidate = function(err, lints) {
 Linter.prototype.end = function() {
 	if (this.ended && this.validating === 0) {
 		var err = this.err.length ? this.err : null;
-		var lint = this.lints.length ? { file: this.options.path, errors: this.lints } : null;
+		var lint = this.lints.length ? { file: this.options.path, lines: this.options.lines, errors: this.lints } : null;
 		this.cb(err, lint);
 	}
 };
@@ -76,6 +76,7 @@ exports.lint = function lint(options, cb) {
 		fs.readFile(options.path, {encoding: 'UTF-8'}, function(err, content) {
 			if (err) return cb([err], []);
 			options.content = content;
+			options.lines = content.split(/\r?\n/);
 			lint(options, cb);
 		});
 		return;
