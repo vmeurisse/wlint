@@ -1,6 +1,5 @@
-var fstreamIgnore = require('fstream-ignore');
-
 var fileLint = require('./fileLint');
+var findFiles = require('./findFiles');
 
 function Linter(folder, cb) {
 	this.nbFiles = 0;
@@ -10,24 +9,23 @@ function Linter(folder, cb) {
 	this.err = [];
 	this.lints = [];
 	
-	fstreamIgnore({
-		path: folder,
+	findFiles({
+		base: folder,
 		ignoreFiles: ['.wlintignore', '.gitignore']
-	}).on('child', function(c) {
-		if (c.type === 'File') {
-			this.nbFiles++;
-			fileLint.lint({path: c.path}, this.onValidate.bind(this));
-		}
-	}.bind(this)).on('end', function() {
+	}, function(err) {
+		if (err) this.err = this.err.push(err);
 		this.ended = true;
 		this.end();
+	}.bind(this))
+	.on('file', function(file) {
+		this.nbFiles++;
+		fileLint.lint({path: file}, this.onValidate.bind(this));
 	}.bind(this));
 }
 
 Linter.prototype.onValidate = function(err, lint) {
 	if (err) this.err = this.err.concat(err);
 	if (lint) this.lints.push(lint);
-	
 	this.nbFiles--;
 	this.end();
 };

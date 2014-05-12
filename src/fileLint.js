@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 
-var minimatch = require('minimatch');
+var wildmatch = require('wildmatch');
 
 var config = require('./config');
 var validators = require('./validators');
@@ -23,7 +23,7 @@ function Linter(options, cb) {
 	this.lints = [];
 	
 	for (var key in options.lintConfig) {
-		if (validators[key] && minimatch(options.path, fileTypes[key], { matchBase: true })) {
+		if (validators[key] && wildmatch(options.path, fileTypes[key], { matchBase: true })) {
 			this.validators.push({
 				validator: validators[key],
 				config: options.lintConfig[key]
