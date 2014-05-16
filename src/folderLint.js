@@ -1,7 +1,7 @@
 var fileLint = require('./fileLint');
 var findFiles = require('./findFiles');
 
-function Linter(folder, cb) {
+function Linter(folder, options, cb) {
 	this.nbFiles = 0;
 	this.ended = false;
 	this.cb = cb;
@@ -19,7 +19,7 @@ function Linter(folder, cb) {
 	}.bind(this))
 	.on('file', function(file) {
 		this.nbFiles++;
-		fileLint.lint({path: file}, this.onValidate.bind(this));
+		fileLint.lint({path: file}, options, this.onValidate.bind(this));
 	}.bind(this));
 }
 
@@ -36,6 +36,6 @@ Linter.prototype.end = function() {
 	}
 };
 
-exports.lint = function(folder, cb) {
-	new Linter(folder, cb);
+exports.lint = function(folder, options, cb) {
+	new Linter(folder, options, cb);
 };
