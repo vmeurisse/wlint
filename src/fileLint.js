@@ -9,16 +9,20 @@ var config = require('./config');
 var validators = require('./validators');
 var fileLintValidator = require.resolve('./fileLint.validator');
 
-var fileTypes = {
-	'eslint': '*.js',
-	'jscs': '*.js',
-	'jshint': '*.js'
-};
-
 var freeWorkers = [];
 var nbworkers = 0;
 var maxWorkers = os.cpus().length - 1;
 var queue = [];
+
+function defaultValidate(validator, path) {
+	var patterns = validator.getDefaultPatterns();
+	for (var i = 0; i < patterns.length; i++) {
+		if (wildmatch(path, patterns[i], { matchBase: true })) {
+			return true;
+		}
+	}
+	return false;
+}
 
 function Linter(file, options, cb) {
 	this.file = file;
@@ -28,7 +32,7 @@ function Linter(file, options, cb) {
 	
 	this.validators = [];
 	for (var key in file.lintConfig) {
-		if (validators[key] && wildmatch(file.path, fileTypes[key], { matchBase: true })) {
+		if (validators[key] && defaultValidate(validators[key], file.path)) {
 			this.validators.push({
 				validator: key,
 				config: file.lintConfig[key]

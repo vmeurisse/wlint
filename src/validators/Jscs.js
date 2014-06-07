@@ -9,6 +9,10 @@ var Validator = function() {
 
 util.inherits(Validator, DefaultValidator);
 
+Validator.prototype.getDefaultPatterns = function() {
+	return ['*.js'];
+};
+
 Validator.prototype.validate = function(options, cb) {
 	var jscs = new Jscs();
 	jscs.registerDefaultRules();
