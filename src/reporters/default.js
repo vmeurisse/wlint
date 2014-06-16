@@ -37,9 +37,10 @@ function getError(message, code, filename) {
 	return chalk.bold(message) + ' [' + code + '] at ' + chalk.green(filename);
 }
 
-function getLine(n, line) {
+function getLine(n, line, highlight) {
+	var lineNum = pad(n, 6, ' ');
 	line = line.replace(/\t/g, ' ');
-	return chalk.grey(pad(n, 6, ' ')) + ' |' + line;
+	return (highlight ? chalk.bold(lineNum) : chalk.grey(lineNum)) + ' |' + line;
 }
 
 function getPointer(column) {
@@ -69,7 +70,7 @@ module.exports = function(err, lints) {
 				var line = error.line;
 				report.push(getError(error.message, error.code, path));
 				for (var i = Math.max(line - 2, 1); i <= line; i++) {
-					report.push(getLine(i, lines[i - 1]));
+					report.push(getLine(i, lines[i - 1], i === line));
 				}
 				report.push(getPointer(error.column));
 				for (i = line + 1; i < lines.length && i <= line + 2; i++) {
