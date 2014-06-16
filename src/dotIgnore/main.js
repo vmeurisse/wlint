@@ -3,73 +3,13 @@ var nodePath = require('path');
 var util = require('util');
 var EventEmitter = require('events').EventEmitter;
 
-var wildmatch = require('wildmatch');
+var IgnoreFile = require('./IgnoreFile');
 
 function flip(array) {
 	var map = {};
 	for (var i = 0; i < array.length; i++) map[array[i]] = i;
 	return map;
 }
-
-function IgnoreRule(line) {
-	if (line[0] === '!') {
-		this.negated = true;
-		line = line.slice(1);
-	}
-	
-	if (line[line.length - 1] === '/') {
-		this.onlyDir = true;
-		line = line.slice(0, -1);
-	}
-	if (line.indexOf('/') === -1) {
-		this.matchBase = true;
-	}
-	if (line[0] === '/') line = line.slice(1);
-	
-	this.line = line;
-}
-IgnoreRule.prototype.negated = false;
-IgnoreRule.prototype.onlyDir = false;
-IgnoreRule.prototype.match = function(path) {
-	return wildmatch(path, this.line, { pathname: !this.matchBase, matchBase: this.matchBase });
-};
-
-function IgnoreFile(path, readyCb) {
-	//this.err;
-	
-	this.pathLength = nodePath.dirname(path).length;
-	
-	this.onReadyCb = readyCb;
-	
-	fs.readFile(path, {encoding: 'UTF-8'}, function(err, content) {
-		this.parse(content);
-	}.bind(this));
-}
-
-IgnoreFile.prototype.parse = function(content) {
-	content = content.split(/\r?\n/);
-	this.rules = [];
-	for (var i = 0; i < content.length; i++) {
-		var line = content[i];
-		if (line === '' || line[0] === '#') continue; //empty lines and comments
-		this.rules.push(new IgnoreRule(line));
-	}
-	this.onReadyCb();
-	delete this.onReadyCb;
-};
-
-IgnoreFile.prototype.match = function(path, isDir) {
-	path = path.slice(this.pathLength + 1);
-	
-	var matchStatus;
-	for (var i = 0; i < this.rules.length; i++) {
-		var rule = this.rules[i];
-		if (matchStatus === !rule.negated) continue;
-		if (rule.onlyDir && !isDir) continue;
-		if (this.rules[i].match(path)) matchStatus = !rule.negated;
-	}
-	return matchStatus;
-};
 
 function FindFiles(options, cb) {
 	this.files = [];

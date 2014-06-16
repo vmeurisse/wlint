@@ -1,5 +1,5 @@
 var fileLint = require('./fileLint');
-var findFiles = require('./findFiles');
+var findFiles = require('./dotIgnore/main');
 
 function Linter(folder, options, cb) {
 	this.nbFiles = 0;
