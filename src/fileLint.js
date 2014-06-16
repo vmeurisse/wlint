@@ -1,7 +1,6 @@
 var childProcess = require('child_process');
 var fs = require('fs');
 var os = require('os');
-var path = require('path');
 
 var wildmatch = require('wildmatch');
 
@@ -100,8 +99,7 @@ Linter.prototype.onValidate = function(result) {
  */
 exports.lint = function lint(file, options, cb) {
 	if (!file.lintConfig) {
-		var folder = path.dirname(file.path);
-		config.load(folder, function(err, conf) {
+		config.load(file.path, function(err, conf) {
 			if (err) return cb([err], []);
 			file.lintConfig = conf;
 			lint(file, options, cb);
