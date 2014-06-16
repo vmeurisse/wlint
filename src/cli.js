@@ -7,6 +7,7 @@ function getOptions(commander) {
 			throw new Error('Invalid value for `--threads` options. Must be a strictly positive integer');
 		}
 	}
+	options.reporter = commander.reporter;
 	
 	options.folder = commander.args[0] || '.';
 	
@@ -20,6 +21,8 @@ module.exports = function() {
 	         .option('-t, --threads <n>', 'Number of threads to use for validation. Default is the number of core of ' +
 	                                      'the machine. NOTE: one thread will be dedicated to search and read the ' +
 	                                      'files while the others perform the actual validation')
+	         .option('--reporter [reporter]', 'Specify which reporter to use to output the result. ' +
+	                                          'Available ones are: default and json.')
 	         .parse(process.argv);
 	
 	var options = getOptions(commander);
