@@ -73,7 +73,7 @@ IgnoreFile.prototype.match = function(path, isDir) {
 
 function FindFiles(options, cb) {
 	this.files = [];
-	this.base = nodePath.normalize(options.base || '.');
+	this.base = nodePath.resolve(options.base || '.');
 	if (options.ignoreFiles) {
 		this.ignoreFiles = typeof options.ignoreFiles === 'string' ? [options.ignoreFiles] : options.ignoreFiles;
 		this.ignoreFilesMap = flip(this.ignoreFiles);
