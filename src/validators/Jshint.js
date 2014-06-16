@@ -13,6 +13,17 @@ Validator.prototype.getDefaultPatterns = function() {
 	return ['*.js'];
 };
 
+Validator.prototype.mergeConfig = function(config, defaults) {
+	if (config.globals && defaults.globals) {
+		for (var key in defaults.globals) {
+			if (!(key in config.globals)) {
+				config.globals[key] = defaults.globals[key];
+			}
+		}
+	}
+	DefaultValidator.prototype.mergeConfig.apply(this, arguments);
+};
+
 Validator.prototype.validate = function(options, cb) {
 	var err = [];
 	
