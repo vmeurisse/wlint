@@ -13,6 +13,7 @@ var folderLint = require('./folderLint');
  */
 exports.lint = function(config, cb) {
 	folderLint.lint(config.folder, config, function(err, lints) {
+		require('./fileLint').killWorkers();
 		var reporter = config.reporter || 'default';
 		require('./reporters/' + reporter)(err, lints);
 		cb(err, lints);

@@ -108,3 +108,11 @@ exports.lint = function lint(file, options, cb) {
 	}
 	new Linter(file, options, cb);
 };
+
+exports.killWorkers = function() {
+	while(freeWorkers.length) {
+		var worker = freeWorkers.pop();
+		worker.kill();
+		nbworkers--;
+	}
+};
